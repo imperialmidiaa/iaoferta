@@ -1,14 +1,14 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="es">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Desafio IA em 28 Dias</title>
+<title>Reto de IA en 28 Días</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-/* ===== Configure aqui: cores da sua marca ===== */
+/* ===== Colores de tu marca ===== */
 :root{
   --brand:#1f5fe0; --brand-ink:#fff; --brand-soft:#e8f0ff; --accent:#f28c28;
   --bg:#f7f7fb; --card:#fff; --ink:#15132b; --muted:#6a6884; --line:#e4e2f0;
@@ -47,8 +47,9 @@ h2 em,h1 em{font-style:normal;color:var(--brand)}
 .opt.sel .chk{background:var(--brand);border-color:var(--brand);box-shadow:inset 0 0 0 3px var(--brand-soft)}
 .cta{display:block;width:100%;border:0;border-radius:14px;padding:16px;background:var(--brand);color:var(--brand-ink);font:700 17px var(--body);margin-top:18px;text-align:center;text-decoration:none}
 .cta:disabled{opacity:.45;cursor:not-allowed}
-.cta.green{background:var(--accent);color:#06281a}
+.cta.green{background:var(--accent);color:#2b1600}
 .note{font-size:13px;color:var(--muted);text-align:center;margin-top:14px}
+.hero-ic{font-size:64px;text-align:center;margin:18px 0 0}
 .load{display:grid;gap:14px;margin:20px 0}
 .lrow{font-weight:600;font-size:15px}
 .lrow div{display:flex;justify-content:space-between}
@@ -59,8 +60,6 @@ h2 em,h1 em{font-style:normal;color:var(--brand)}
 .box{background:var(--card);border-radius:18px;padding:22px;max-width:380px;width:100%;text-align:center}
 .box .opts{grid-template-columns:1fr 1fr;margin-top:14px}
 .box .opt{justify-content:center}
-.field{width:100%;border:2px solid var(--line);border-radius:14px;padding:15px 16px;font:500 16px var(--body);background:var(--card);color:var(--ink)}
-.field:focus{border-color:var(--brand);outline:none}
 .card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px;margin-top:14px}
 .compare{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
 .compare .card{margin:0;text-align:center}
@@ -74,6 +73,13 @@ h2 em,h1 em{font-style:normal;color:var(--brand)}
 .weeks p{margin:2px 0 0;color:var(--muted);font-size:14px}
 .inc{list-style:none;padding:0;margin:0;display:grid;gap:8px}
 .inc li::before{content:"✓";color:var(--accent);font-weight:800;margin-right:8px}
+.facts{display:grid;gap:10px;margin-top:14px}
+.fact{display:grid;grid-template-columns:40px 1fr;gap:12px;align-items:start;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px}
+.fact .fi{font-size:26px;line-height:1}
+.fact b{display:block;margin-bottom:2px}
+.fact p{margin:0;color:var(--muted);font-size:14px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:12px}
+.chips span{background:var(--brand-soft);color:var(--brand);font-weight:700;font-size:14px;padding:6px 12px;border-radius:99px}
 .price{text-align:center}
 .price s{color:var(--muted)}
 .price .big{font:800 44px/1 var(--display);margin:6px 0;color:var(--ink)}
@@ -87,7 +93,7 @@ footer{text-align:center;font-size:12px;color:var(--muted);padding:20px 16px}
 <body>
 <header class="top">
   <div class="topin">
-    <button class="back" id="back" aria-label="Voltar">←</button>
+    <button class="back" id="back" aria-label="Volver">←</button>
     <div class="logo" id="logo"></div>
     <span></span>
   </div>
@@ -95,63 +101,82 @@ footer{text-align:center;font-size:12px;color:var(--muted);padding:20px 16px}
 </header>
 <main id="app"></main>
 <div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="mq">
-  <div class="box"><h2 id="mq" style="margin-top:0">Você está pronto para começar hoje?</h2>
-    <div class="opts"><button class="opt" data-m="nao">Ainda não</button><button class="opt" data-m="sim">Sim!</button></div></div>
+  <div class="box"><h2 id="mq" style="margin-top:0">¿Estás listo para empezar hoy?</h2>
+    <div class="opts"><button class="opt" data-m="no">Todavía no</button><button class="opt" data-m="si">¡Sí!</button></div></div>
 </div>
-<footer>© <span id="yr"></span> <span id="brand2"></span> · Termos de uso · Política de privacidade</footer>
+<footer>© <span id="yr"></span> <span id="brand2"></span> · Términos de uso · Política de privacidad</footer>
 
 <script>
-/* ============ CONFIGURE AQUI ============ */
+/* ============ CONFIGURA AQUÍ ============ */
 const CONFIG = {
-  marca: "Rota<span>IA</span>",          // nome da sua marca (pode usar <span> para colorir parte)
-  marcaTexto: "RotaIA",                   // nome sem formatação, para o rodapé
-  checkout: "https://SEU-CHECKOUT-AQUI",  // link do seu checkout (Kiwify, Hotmart, Cakto…)
-  precoDe: "R$ 97,00",
-  precoPor: "R$ 27,90",
-  parcelas: "ou 3x de R$ 9,97",
-  garantia: "7 dias",
-  desconto: "70% OFF",                    // o que aparece na raspadinha (use um desconto real)
-  // Assinatura com período de teste (deixe teste: null para pagamento único)
-  teste: null,                            // exemplo: { preco: "R$ 9,90", periodo: "7 dias", renovacao: "R$ 29,90 a cada 4 semanas" }
-  cronometroMin: 0,                       // minutos do cronômetro da oferta; 0 desliga. Use só com prazo real.
-  // Depoimentos: use apenas depoimentos reais de alunos, com autorização.
+  marca: "Ruta<span>IA</span>",           // nombre de tu marca (puedes usar <span> para colorear una parte)
+  marcaTexto: "RutaIA",                   // nombre sin formato, para el pie de página
+  checkout: "https://TU-CHECKOUT-AQUI",   // enlace de tu checkout (Hotmart, Kiwify, Cakto…)
+  precoDe: "US$ 47",
+  precoPor: "US$ 9,90",
+  parcelas: "",                           // ej.: "o 3 cuotas de US$ 3,30" (déjalo vacío si no aplica)
+  garantia: "7 días",
+  desconto: "70% OFF",                    // lo que aparece en la tarjeta para raspar (usa un descuento real)
+  // Suscripción con periodo de prueba (deja teste: null para pago único)
+  teste: null,                            // ej.: { preco: "US$ 4,90", periodo: "7 días", renovacao: "US$ 19,90 cada 4 semanas" }
+  cronometroMin: 0,                       // minutos del cronómetro de la oferta; 0 lo apaga. Úsalo solo con un plazo real.
+  // Testimonios: usa solo testimonios reales de alumnos, con autorización.
   depoimentos: [
-    // { nome: "Nome do aluno", cargo: "Profissão", texto: "O que ele disse de verdade." },
+    // { nome: "Nombre del alumno", cargo: "Profesión", texto: "Lo que dijo de verdad." },
   ],
 };
 /* ======================================== */
 
 const STEPS = [
-  { id:"genero", q:"Responda rápido e receba <em>seu plano</em>", sub:"Para começar, como você se identifica?", two:true,
-    o:[["👨","Homem"],["👩","Mulher"]] },
-  { id:"idade", q:"Seu plano de IA começa <em>por onde você está hoje</em>", sub:"Qual é a sua faixa de idade?", two:true,
-    o:[["🧑","18 a 24"],["👩","25 a 34"],["🧔","35 a 44"],["👵","45 ou mais"]] },
-  { id:"meta", q:"O que você quer conquistar com IA <em>nos próximos 28 dias</em>?",
-    o:[["💰","Ganhar mais sem trabalhar mais horas"],["📈","Ter melhores oportunidades de trabalho"],["🎯","Aprender uma habilidade que paga bem"],["🕊️","Ter mais tempo livre e menos estresse"],["🚀","Criar um negócio próprio"]] },
-  { id:"area", q:"Qual dessas opções descreve <em>seu momento</em>?", sub:"Escolha a mais próxima",
-    o:[["🏢","Trabalho CLT"],["💻","Autônomo ou freelancer"],["🏪","Tenho um negócio"],["🎓","Estudante"],["🔎","Procurando oportunidades"]] },
-  { id:"rotina", q:"Como é a sua <em>rotina de trabalho</em>?", sub:"Assim o plano se encaixa no seu dia",
-    o:[["🌞","Trabalho de dia"],["🌙","Trabalho à noite"],["🔀","Meus horários são flexíveis"],["📚","Só estudo"],["🏖️","Sou aposentado(a)"],["⏸️","Não estou trabalhando agora"]] },
-  { id:"tempo", q:"Quanto tempo por dia você <em>consegue dedicar</em>?",
-    o:[["⏱️","Até 15 minutos"],["⏰","De 15 a 30 minutos"],["🕐","De 30 a 60 minutos"],["🗓️","Mais de 1 hora"]] },
-  { id:"desafios", q:"Quais desses <em>desafios</em> você vive hoje?", sub:"Marque todos que se aplicam", multi:true,
-    o:[["😕","Sinto que ganho pouco"],["⌛","Falta de tempo"],["🔁","Rotina cansativa"],["😟","Preocupação com dinheiro"],["🧭","Não sei por onde começar"],["📉","Medo de ficar para trás"]] },
-  { id:"nivel", q:"Qual é a sua <em>experiência com IA</em>?",
-    o:[["🌱","Nunca usei"],["💬","Já usei o ChatGPT algumas vezes"],["⚙️","Uso no trabalho, mas quero ir além"]] },
-  { id:"criar", q:"O que você gostaria de <em>criar com IA</em>?", sub:"Marque todos que quiser", multi:true,
-    o:[["✍️","Textos e posts"],["🖼️","Imagens e artes"],["🎬","Vídeos"],["🤖","Automações"],["💬","Atendimento automático"]] },
-  { id:"financas", q:"Como você se sente com a sua <em>vida financeira</em> hoje?",
-    o:[["🙂","Tranquilo(a)"],["⚖️","Queria mais estabilidade"],["🧗","Tenho dificuldade de avançar"],["😣","Preciso mudar urgente"]] },
-  { id:"renda", q:"Quanto você gostaria de <em>ganhar por mês</em>?",
-    o:[["💵","Até R$ 3 mil"],["💰","De R$ 3 mil a R$ 10 mil"],["🏆","Mais de R$ 10 mil"]] },
-  { id:"liberdade", q:"Você gostaria de trabalhar com <em>horário flexível</em>, de onde quiser?", two:true,
-    o:[["👍","Sim"],["👎","Não"]] },
-  { id:"sonho", q:"Existe algo <em>especial</em> que você quer conquistar?", sub:"Ter um objetivo claro aumenta suas chances",
-    o:[["🏠","Minha casa"],["✈️","Uma viagem"],["💳","Sair das dívidas"],["👨‍👩‍👧","Dar mais conforto à família"],["🌴","Me aposentar mais cedo"]] },
+  { id:"genero", q:"Responde rápido y recibe <em>tu plan</em>", sub:"Para empezar, ¿cómo te identificas?", two:true,
+    o:[["👨","Hombre"],["👩","Mujer"]] },
+  { id:"idade", q:"Tu plan de IA empieza <em>donde estás hoy</em>", sub:"¿Cuál es tu rango de edad?", two:true,
+    o:[["🧑","18 a 24"],["👩","25 a 34"],["🧔","35 a 44"],["👵","45 o más"]] },
+  { id:"meta", q:"¿Qué quieres conseguir con IA <em>en los próximos 28 días</em>?",
+    o:[["💰","Ganar más sin trabajar más horas"],["📈","Conseguir mejores oportunidades de trabajo"],["🎯","Aprender una habilidad bien pagada"],["🕊️","Tener más tiempo libre y menos estrés"],["🚀","Crear mi propio negocio"]] },
+  { id:"area", q:"¿Cuál de estas opciones describe <em>tu momento</em>?", sub:"Elige la más cercana",
+    o:[["🏢","Empleo fijo"],["💻","Independiente o freelancer"],["🏪","Tengo un negocio"],["🎓","Estudiante"],["🔎","Buscando oportunidades"]] },
+  { id:"rotina", q:"¿Cómo es tu <em>rutina de trabajo</em>?", sub:"Así el plan se adapta a tu día",
+    o:[["🌞","Trabajo de día"],["🌙","Trabajo de noche"],["🔀","Mis horarios son flexibles"],["📚","Solo estudio"],["🏖️","Estoy jubilado(a)"],["⏸️","No estoy trabajando ahora"]] },
+  { id:"desafios", q:"¿Cuáles de estos <em>desafíos</em> vives hoy?", sub:"Marca todos los que apliquen", multi:true,
+    o:[["😕","Siento que gano poco"],["⌛","Me falta tiempo"],["🔁","Rutina agotadora"],["😟","Preocupación por el dinero"],["🧭","No sé por dónde empezar"],["📉","Miedo a quedarme atrás"]] },
+  { id:"i_gracias", type:"info", ic:"🙌", t:"¡Gracias! Ya estamos <em>armando tu plan</em>",
+    p:"Cada respuesta ajusta tu ruta de 28 días. Faltan pocas preguntas para tenerla lista." },
+  { id:"financas", q:"¿Cómo te sientes con tu <em>situación financiera</em> hoy?",
+    o:[["🙂","Tranquilo(a)"],["⚖️","Quisiera más estabilidad"],["🧗","Me cuesta avanzar"],["😣","Necesito un cambio urgente"]] },
+  { id:"renda", q:"¿Cuánto te gustaría <em>ganar al mes</em>?",
+    o:[["💵","Hasta US$ 1.000"],["💰","De US$ 1.000 a US$ 3.000"],["🏆","Más de US$ 3.000"]] },
+  { id:"liberdade", q:"¿Te gustaría trabajar con <em>horario flexible</em>, desde donde quieras?", two:true,
+    o:[["👍","Sí"],["👎","No"]] },
+  { id:"automatizar", q:"¿Te gustaría que la IA hiciera <em>tus tareas repetitivas</em>?", two:true,
+    o:[["🤖","¡Sí, claro!"],["🙅","Por ahora no"]] },
+  { id:"estilo", q:"¿Quieres un trabajo que vaya <em>con tu estilo de vida</em>?", two:true,
+    o:[["💯","Totalmente"],["🤷","No necesariamente"]] },
+  { id:"i_datos", type:"facts", t:"La IA ya está <em>cambiando el trabajo</em>",
+    f:[["⚡","Tareas en minutos","Textos, imágenes y resúmenes que antes tomaban horas hoy se hacen en pocos minutos."],
+       ["🧑‍💼","Nuevas oportunidades","Negocios de todos los tamaños buscan personas que sepan usar herramientas de IA."],
+       ["📱","Desde el celular","Muchas herramientas funcionan en el teléfono, sin computadora potente ni conocimientos técnicos."]] },
+  { id:"nivel", q:"¿Cuánto sabes sobre <em>inteligencia artificial</em>?",
+    o:[["🌱","Nada, empiezo de cero"],["💬","Probé ChatGPT algunas veces"],["🧰","Conozco algunas herramientas"],["⚙️","La uso en el trabajo y quiero ir más allá"]] },
+  { id:"extra", q:"¿Ya intentaste tener <em>ingresos extra</em>?",
+    o:[["🔁","Sí, hago trabajos de vez en cuando"],["🏢","No, solo tengo mi trabajo principal"],["💻","Ya hice trabajos freelance"],["🆕","Nunca lo intenté"]] },
+  { id:"aprender", q:"¿Te resulta fácil <em>aprender cosas nuevas</em>?",
+    o:[["⚡","Sí, me adapto rápido"],["🐢","Me cuesta un poco, pero lo logro"],["😅","Me cuesta bastante"]] },
+  { id:"ferramentas", q:"¿Qué <em>herramientas de IA</em> ya conoces?", sub:"Marca todas las que quieras. Si no conoces ninguna, no pasa nada.", multi:true,
+    o:[["💬","ChatGPT"],["✨","Gemini"],["🎨","Generadores de imágenes"],["🎬","Editores de video con IA"],["🙈","Ninguna todavía"]] },
+  { id:"criar", q:"¿Qué te gustaría <em>crear con IA</em>?", sub:"Marca todo lo que quieras", multi:true,
+    o:[["✍️","Textos y publicaciones"],["🖼️","Imágenes y diseños"],["🎬","Videos"],["🤖","Automatizaciones"],["💬","Atención automática a clientes"]] },
+  { id:"i_resumo", type:"summary" },
   { id:"potencial", type:"potential" },
+  { id:"sonho", q:"¿Hay algo <em>especial</em> que quieras lograr?", sub:"Tener una meta clara aumenta tus posibilidades",
+    o:[["🏠","Mi casa propia"],["✈️","Un viaje"],["💳","Salir de deudas"],["👨‍👩‍👧","Darle más comodidad a mi familia"],["🌴","Jubilarme antes"]] },
+  { id:"tempo", q:"¿Cuánto tiempo al día <em>puedes dedicar</em>?",
+    o:[["⏱️","Hasta 15 minutos"],["⏰","De 15 a 30 minutos"],["🕐","De 30 a 60 minutos"],["🗓️","Más de 1 hora"]] },
+  { id:"i_prova", type:"info", ic:"🚀", t:"Personas con tu perfil <em>ya empezaron</em>",
+    p:"Con pocos minutos al día y paso a paso, la IA se vuelve una herramienta de trabajo en pocas semanas.", btn:"Quiero avanzar" },
   { id:"carregando", type:"load" },
-  { id:"ancora", q:"Quanto você investiria em um <em>plano de IA feito para você</em>?",
-    o:[["🟢","R$ 19,90"],["🟡","R$ 29,90"],["🟠","R$ 39,90"]] },
+  { id:"ancora", q:"¿Cuánto invertirías en un <em>plan de IA hecho para ti</em>?",
+    o:[["🟢","US$ 9"],["🟡","US$ 19"],["🟠","US$ 29"]] },
   { id:"raspadinha", type:"scratch" },
   { id:"resultado", type:"result" },
 ];
@@ -159,21 +184,24 @@ const A = {}; let i = 0;
 const $ = s => document.querySelector(s);
 const app = $("#app");
 $("#logo").innerHTML = CONFIG.marca; $("#brand2").textContent = CONFIG.marcaTexto; $("#yr").textContent = new Date().getFullYear();
+const low = x => String(x || "").toLowerCase();
 
 function render(){
   const s = STEPS[i];
   $("#prog").style.width = Math.round(i / (STEPS.length - 1) * 100) + "%";
   $("#back").style.visibility = i > 0 && s.type !== "result" ? "visible" : "hidden";
+  if(s.type === "info") return renderInfo(s);
+  if(s.type === "facts") return renderFacts(s);
+  if(s.type === "summary") return renderSummary();
   if(s.type === "potential") return renderPotential();
   if(s.type === "scratch") return renderScratch();
   if(s.type === "load") return renderLoad();
-  if(s.type === "email") return renderEmail();
   if(s.type === "result") return renderResult();
-  const intro = i === 0 ? `<h1>Desafio de IA<br><em>em 28 dias</em></h1>` : "";
+  const intro = i === 0 ? `<h1>¡Reto de IA<br><em>en 28 días</em>!</h1>` : "";
   app.innerHTML = `<section class="step on">${intro}<h2>${s.q}</h2>${s.sub ? `<p class="sub">${s.sub}</p>` : ""}
     <div class="opts ${s.two ? "two" : ""}">${s.o.map(([ic, t], k) => `<button class="opt" data-k="${k}"><span class="ic" aria-hidden="true">${ic}</span><span>${t}</span>${s.multi ? `<span class="chk" aria-hidden="true"></span>` : ""}</button>`).join("")}</div>
     ${s.multi ? `<button class="cta" id="next" disabled>Continuar</button>` : ""}
-    ${i === 0 ? `<p class="note">Responda algumas perguntas rápidas para montar seu plano.</p>` : ""}</section>`;
+    ${i === 0 ? `<p class="note">Responde unas preguntas rápidas para armar tu plan.</p>` : ""}</section>`;
   const sel = new Set(A[s.id] || []);
   app.querySelectorAll(".opt").forEach(b => {
     const t = s.o[b.dataset.k][1];
@@ -187,29 +215,47 @@ function render(){
 }
 function go(){ i = Math.min(i + 1, STEPS.length - 1); render(); scrollTo(0, 0); }
 $("#back").addEventListener("click", () => { if(i > 0){ i--; render(); } });
+function nextBtn(label){ return `<button class="cta" id="next">${label || "Continuar"}</button>`; }
+function bindNext(){ $("#next").addEventListener("click", go); }
 
+function renderInfo(s){
+  app.innerHTML = `<section class="step on"><div class="hero-ic" aria-hidden="true">${s.ic}</div><h2>${s.t}</h2><p class="sub">${s.p}</p>${nextBtn(s.btn)}</section>`;
+  bindNext();
+}
+function renderFacts(s){
+  app.innerHTML = `<section class="step on"><h2>${s.t}</h2><div class="facts">${s.f.map(([ic, b, p]) => `<div class="fact"><span class="fi" aria-hidden="true">${ic}</span><div><b>${b}</b><p>${p}</p></div></div>`).join("")}</div>${nextBtn()}</section>`;
+  bindNext();
+}
+function renderSummary(){
+  const areas = A.criar || ["Textos y publicaciones"];
+  app.innerHTML = `<section class="step on"><div class="hero-ic" aria-hidden="true">🧠</div><h2>Estamos preparando tu <em>plan de aprendizaje</em></h2>
+    <p class="sub">Según tus respuestas, quieres usar la IA para:</p>
+    <div class="chips">${areas.map(a => `<span>${a}</span>`).join("")}</div>
+    <div class="card"><p style="margin:0">Objetivo: <b>${low(A.meta) || "crecer con IA"}</b><br>Nivel actual: <b>${low(A.nivel) || "principiante"}</b></p></div>
+    ${nextBtn()}</section>`;
+  bindNext();
+}
 function renderPotential(){
-  const alvo = (A.renda || "uma renda maior").toLowerCase();
-  app.innerHTML = `<section class="step on"><p style="text-align:center"><span class="tag">Seu diagnóstico</span></p>
-    <h2>Seu <em>potencial com IA</em> é alto</h2>
-    <div class="card"><b>Potencial de crescimento</b><div class="meter" style="height:14px"><i id="pm" style="width:0;background:linear-gradient(90deg,#f0a04b,var(--accent));transition:width 1.4s ease"></i></div>
-      <div style="display:flex;justify-content:space-between;font-size:13px;color:var(--muted)"><span>Baixo</span><span>Médio</span><span>Alto</span></div></div>
-    <div class="card"><p style="margin:0">Pelas suas respostas, você tem o perfil para usar IA em <b>${(A.criar || ["textos e posts"]).join(", ").toLowerCase()}</b> e buscar <b>${alvo}</b> com ${(A.tempo || "pouco tempo por dia").toLowerCase()}.</p></div>
-    <button class="cta" id="next">Continuar</button></section>`;
+  app.innerHTML = `<section class="step on"><p style="text-align:center"><span class="tag">Tu diagnóstico</span></p>
+    <h2>Tu <em>potencial con IA</em> es alto</h2>
+    <div class="card"><b>Potencial de crecimiento</b><div class="meter" style="height:14px"><i id="pm" style="width:0;background:linear-gradient(90deg,#f0a04b,var(--brand));transition:width 1.4s ease"></i></div>
+      <div style="display:flex;justify-content:space-between;font-size:13px;color:var(--muted)"><span>Bajo</span><span>Medio</span><span>Alto</span></div></div>
+    <div class="card"><p style="margin:0">Por tus respuestas, tienes el perfil para usar IA en <b>${low((A.criar || ["textos y publicaciones"]).join(", "))}</b> y buscar <b>${low(A.renda) || "más ingresos"}</b>.</p></div>
+    ${nextBtn()}</section>`;
   setTimeout(() => { const m = $("#pm"); if(m) m.style.width = "86%"; }, 100);
-  $("#next").addEventListener("click", go);
+  bindNext();
 }
 function renderScratch(){
-  app.innerHTML = `<section class="step on"><h2>Raspe e ganhe um <em>desconto no seu desafio</em></h2>
-    <p class="sub">Passe o dedo ou o mouse sobre o cartão</p>
+  app.innerHTML = `<section class="step on"><h2>Raspa y gana un <em>descuento en tu reto</em></h2>
+    <p class="sub">Pasa el dedo o el mouse sobre la tarjeta</p>
     <div style="position:relative;max-width:320px;margin:0 auto;aspect-ratio:16/10;border-radius:16px;overflow:hidden;background:var(--brand-soft);display:grid;place-items:center;text-align:center">
-      <div><div style="font:700 15px var(--body);color:var(--muted)">VOCÊ GANHOU</div><div style="font:800 46px/1 var(--display);color:var(--brand)">${CONFIG.desconto}</div><div style="font-size:14px;color:var(--muted)">no seu plano</div></div>
+      <div><div style="font:700 15px var(--body);color:var(--muted)">¡GANASTE!</div><div style="font:800 46px/1 var(--display);color:var(--brand)">${CONFIG.desconto}</div><div style="font-size:14px;color:var(--muted)">en tu plan</div></div>
       <canvas id="sc" style="position:absolute;inset:0;width:100%;height:100%;touch-action:none;cursor:grab"></canvas></div>
-    <button class="cta green" id="next" disabled>Usar meu desconto</button></section>`;
+    <button class="cta green" id="next" disabled>Usar mi descuento</button></section>`;
   const c = $("#sc"), x = c.getContext("2d"), r = c.getBoundingClientRect();
   c.width = r.width; c.height = r.height;
   x.fillStyle = "#b9bfd3"; x.fillRect(0, 0, c.width, c.height);
-  x.fillStyle = "#7d849c"; x.font = "700 18px Inter, sans-serif"; x.textAlign = "center"; x.fillText("RASPE AQUI", c.width / 2, c.height / 2 + 6);
+  x.fillStyle = "#7d849c"; x.font = "700 18px Inter, sans-serif"; x.textAlign = "center"; x.fillText("RASPA AQUÍ", c.width / 2, c.height / 2 + 6);
   x.globalCompositeOperation = "destination-out";
   let down = false, n = 0;
   const pos = e => { const b = c.getBoundingClientRect(), p = e.touches ? e.touches[0] : e; return [p.clientX - b.left, p.clientY - b.top]; };
@@ -217,74 +263,63 @@ function renderScratch(){
   ["mousedown", "touchstart"].forEach(ev => c.addEventListener(ev, e => { down = true; draw(e); }, { passive: false }));
   ["mousemove", "touchmove"].forEach(ev => c.addEventListener(ev, draw, { passive: false }));
   ["mouseup", "mouseleave", "touchend"].forEach(ev => c.addEventListener(ev, () => down = false));
-  $("#next").addEventListener("click", go);
+  bindNext();
 }
 function renderLoad(){
-  const rows = ["Analisando suas respostas", "Identificando seu perfil", "Montando seu plano de 28 dias", "Ajustando ao seu tempo disponível"];
+  const rows = ["Analizando tus respuestas", "Identificando tu perfil", "Armando tu plan de 28 días", "Ajustando a tu tiempo disponible"];
   const deps = CONFIG.depoimentos.map(d => `<p class="dep">“${d.texto}”<br><b>${d.nome}</b> · ${d.cargo}</p>`).join("");
-  app.innerHTML = `<section class="step on"><h2>Criando seu <em>plano personalizado</em></h2>
+  app.innerHTML = `<section class="step on"><h2>Creando tu <em>plan personalizado</em></h2>
     <div class="load">${rows.map((r, k) => `<div class="lrow"><div><span>${r}</span><span id="p${k}">0%</span></div><div class="lbar"><i id="b${k}"></i></div></div>`).join("")}</div>
     ${deps ? `<div class="card">${deps}</div>` : ""}</section>`;
   let k = 0, p = 0, asked = false;
-  const t = setInterval(() => {
-    p += 4; $("#b" + k).style.width = p + "%"; $("#p" + k).textContent = p + "%";
-    if(k === 1 && p >= 60 && !asked){ asked = true; clearInterval(t); ask(() => resume()); return; }
-    if(p >= 100){ $("#p" + k).textContent = "100% ✓"; k++; p = 0; if(k >= rows.length){ clearInterval(t); setTimeout(go, 500); } }
-  }, 60);
-  function resume(){
-    const t2 = setInterval(() => {
+  const run = () => {
+    const t = setInterval(() => {
       p += 4; $("#b" + k).style.width = p + "%"; $("#p" + k).textContent = p + "%";
-      if(p >= 100){ $("#p" + k).textContent = "100% ✓"; k++; p = 0; if(k >= rows.length){ clearInterval(t2); setTimeout(go, 500); } }
+      if(k === 1 && p >= 60 && !asked){ asked = true; clearInterval(t); ask(run); return; }
+      if(p >= 100){ $("#p" + k).textContent = "100% ✓"; k++; p = 0; if(k >= rows.length){ clearInterval(t); setTimeout(go, 500); } }
     }, 60);
-  }
+  };
+  run();
 }
 function ask(done){
   const m = $("#modal"); m.classList.add("on");
-  m.querySelectorAll(".opt").forEach(b => b.onclick = () => { A.pronto = b.dataset.m; m.classList.remove("on"); done(); });
-}
-function renderEmail(){
-  app.innerHTML = `<section class="step on"><h2>Seu plano está <em>pronto!</em></h2>
-    <p class="sub">Digite seu melhor e-mail para ver o resultado e receber o plano.</p>
-    <form id="f"><input class="field" type="email" id="em" required placeholder="seuemail@exemplo.com" autocomplete="email">
-    <button class="cta" type="submit">Ver meu plano</button></form>
-    <p class="note">Usamos seu e-mail só para enviar o plano. Nada de spam.</p></section>`;
-  $("#f").addEventListener("submit", e => { e.preventDefault(); A.email = $("#em").value.trim(); /* Conecte aqui sua ferramenta de e-mail (webhook, RD Station, etc.) */ go(); });
+  m.querySelectorAll(".opt").forEach(b => b.onclick = () => { A.listo = b.dataset.m; m.classList.remove("on"); done(); });
 }
 function renderResult(){
-  const tempo = A.tempo || "15 minutos por dia", meta = (A.meta || "seu objetivo").toLowerCase();
-  const criar = (A.criar || ["textos e posts"]).map(x => x.toLowerCase()).join(", ");
-  const inicio = { "Nunca usei": 10, "Já usei o ChatGPT algumas vezes": 30, "Uso no trabalho, mas quero ir além": 50 }[A.nivel] || 20;
+  const tempo = low(A.tempo) || "pocos minutos al día", meta = low(A.meta) || "tu objetivo";
+  const criar = low((A.criar || ["textos y publicaciones"]).join(", "));
+  const inicio = { "Nada, empiezo de cero": 10, "Probé ChatGPT algunas veces": 25, "Conozco algunas herramientas": 40, "La uso en el trabajo y quiero ir más allá": 55 }[A.nivel] || 20;
   app.innerHTML = `<section class="step on">
-    <p style="text-align:center"><span class="tag">Plano personalizado</span></p>
-    <h2>Seu plano para <em>${meta}</em> com IA</h2>
-    <p class="sub">Montado para ${tempo.toLowerCase()}, com foco em ${criar}.</p>
+    <p style="text-align:center"><span class="tag">Plan personalizado</span></p>
+    <h2>Tu plan para <em>${meta}</em> con IA</h2>
+    <p class="sub">Pensado para ${tempo}, con foco en ${criar}.</p>
     <div class="compare">
-      <div class="card"><b>Hoje</b>Domínio de IA<div class="meter"><i style="width:${inicio}%;background:#f0a04b"></i></div><small>${A.nivel || "Iniciante"}</small></div>
-      <div class="card"><b>Em 28 dias</b>Domínio de IA<div class="meter"><i style="width:85%;background:var(--accent)"></i></div><small>Usando IA no dia a dia</small></div>
+      <div class="card"><b>Hoy</b>Dominio de IA<div class="meter"><i style="width:${inicio}%;background:#f0a04b"></i></div><small>${A.nivel || "Principiante"}</small></div>
+      <div class="card"><b>En 28 días</b>Dominio de IA<div class="meter"><i style="width:85%;background:var(--brand)"></i></div><small>Usando IA en tu día a día</small></div>
     </div>
-    <div class="card"><h2 style="text-align:left;margin-top:0">Sua rota de 4 semanas</h2>
+    <div class="card"><h2 style="text-align:left;margin-top:0">Tu ruta de 4 semanas</h2>
       <ul class="weeks">
-        <li><span class="n">S1</span><div><b>Fundamentos</b><p>As ferramentas certas e como escrever bons comandos.</p></div></li>
-        <li><span class="n">S2</span><div><b>Criação</b><p>Produza ${criar} em minutos.</p></div></li>
-        <li><span class="n">S3</span><div><b>Produtividade</b><p>Automatize tarefas repetitivas e ganhe tempo.</p></div></li>
-        <li><span class="n">S4</span><div><b>Aplicação</b><p>Use o que aprendeu para ${meta}.</p></div></li>
+        <li><span class="n">S1</span><div><b>Fundamentos</b><p>Las herramientas correctas y cómo escribir buenas instrucciones.</p></div></li>
+        <li><span class="n">S2</span><div><b>Creación</b><p>Produce ${criar} en minutos.</p></div></li>
+        <li><span class="n">S3</span><div><b>Productividad</b><p>Automatiza tareas repetitivas y gana tiempo.</p></div></li>
+        <li><span class="n">S4</span><div><b>Aplicación</b><p>Usa lo aprendido para ${meta}.</p></div></li>
       </ul></div>
-    <div class="card"><h2 style="text-align:left;margin-top:0">O que você recebe</h2>
-      <ul class="inc"><li>28 aulas curtas, uma por dia</li><li>Biblioteca de comandos prontos para copiar</li><li>Exercícios práticos com cada ferramenta</li><li>Acesso pelo celular ou computador</li><li>Certificado de conclusão</li></ul></div>
+    <div class="card"><h2 style="text-align:left;margin-top:0">Lo que recibes</h2>
+      <ul class="inc"><li>28 lecciones cortas, una por día</li><li>Biblioteca de instrucciones listas para copiar</li><li>Ejercicios prácticos con cada herramienta</li><li>Acceso desde el celular o la computadora</li><li>Certificado de finalización</li></ul></div>
     <div class="card price"><span class="tag">${CONFIG.desconto} aplicado</span>
-      ${CONFIG.cronometroMin ? `<p class="note">Desconto válido por <b id="tm"></b></p>` : ""}
+      ${CONFIG.cronometroMin ? `<p class="note">Descuento válido por <b id="tm"></b></p>` : ""}
       ${CONFIG.teste
-        ? `<p style="margin:12px 0 0">Teste por ${CONFIG.teste.periodo}</p><div class="big">${CONFIG.teste.preco}</div>
-           <p class="note" style="margin:0">Depois, ${CONFIG.teste.renovacao}. Cancele quando quiser.</p>`
-        : `<p style="margin:12px 0 0">De <s>${CONFIG.precoDe}</s> por</p><div class="big">${CONFIG.precoPor}</div>
-           <p class="note" style="margin:0">${CONFIG.parcelas} · pagamento único</p>`}
-      <a class="cta green" href="${CONFIG.checkout}" target="_blank" rel="noopener">Quero começar meu desafio</a>
-      <p class="note">🔒 Compra segura · Garantia incondicional de ${CONFIG.garantia}</p></div>
-    <div class="card faq"><h2 style="text-align:left;margin-top:0">Perguntas frequentes</h2>
-      <details><summary>Preciso saber tecnologia?</summary><p>Não. O desafio começa do zero e explica cada passo.</p></details>
-      <details><summary>Quanto tempo por dia?</summary><p>As aulas foram pensadas para caber em ${tempo.toLowerCase()}.</p></details>
-      <details><summary>Como recebo o acesso?</summary><p>Logo após a compra, você recebe o acesso no e-mail.</p></details>
-      <details><summary>E se eu não gostar?</summary><p>Você tem ${CONFIG.garantia} de garantia. Pediu, recebeu seu dinheiro de volta.</p></details>
+        ? `<p style="margin:12px 0 0">Prueba por ${CONFIG.teste.periodo}</p><div class="big">${CONFIG.teste.preco}</div>
+           <p class="note" style="margin:0">Después, ${CONFIG.teste.renovacao}. Cancela cuando quieras.</p>`
+        : `<p style="margin:12px 0 0">De <s>${CONFIG.precoDe}</s> a</p><div class="big">${CONFIG.precoPor}</div>
+           <p class="note" style="margin:0">${CONFIG.parcelas ? CONFIG.parcelas + " · " : ""}pago único</p>`}
+      <a class="cta green" href="${CONFIG.checkout}" target="_blank" rel="noopener">Quiero empezar mi reto</a>
+      <p class="note">🔒 Compra segura · Garantía incondicional de ${CONFIG.garantia}</p></div>
+    <div class="card faq"><h2 style="text-align:left;margin-top:0">Preguntas frecuentes</h2>
+      <details><summary>¿Necesito saber de tecnología?</summary><p>No. El reto empieza desde cero y explica cada paso.</p></details>
+      <details><summary>¿Cuánto tiempo al día?</summary><p>Las lecciones están pensadas para ${tempo}.</p></details>
+      <details><summary>¿Cómo recibo el acceso?</summary><p>Justo después de la compra recibes el acceso en tu correo.</p></details>
+      <details><summary>¿Y si no me gusta?</summary><p>Tienes ${CONFIG.garantia} de garantía. Lo pides y te devolvemos tu dinero.</p></details>
     </div></section>`;
   if(CONFIG.cronometroMin){
     let s = CONFIG.cronometroMin * 60;
