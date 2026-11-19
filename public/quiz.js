@@ -2,12 +2,15 @@
 const CONFIG = {
   marca: "Rota<span>IA</span>",            // nome da sua marca (pode usar <span> para colorir uma parte)
   marcaTexto: "RotaIA",                    // nome sem formatação, para o rodapé
-  checkout: "https://SEU-CHECKOUT-AQUI",   // link do seu checkout (Hotmart, Kiwify, Cakto…)
-  precoDe: "R$ 197",
-  precoPor: "R$ 47",
+  // Planos: aparecem na pergunta "Quanto você investiria" e a oferta usa o preço e o link do escolhido
+  planos: [
+    { preco: 27, link: "https://pay.cakto.com.br/3auh5je_1344498" },
+    { preco: 47, link: "https://pay.cakto.com.br/wa9ivgw" },
+    { preco: 64, link: "https://pay.cakto.com.br/3vfvzan" },
+  ],
+  precoDe: 197,                            // preço "de" riscado; o desconto da raspadinha é calculado a partir dele
   parcelas: "",                            // ex.: "ou 5x de R$ 10,46" (deixe vazio se não usar)
   garantia: "7 dias",
-  desconto: "76% OFF",                     // o que aparece na raspadinha (use um desconto real)
   // Assinatura com período de teste (deixe teste: null para pagamento único)
   teste: null,                             // ex.: { preco: "R$ 9,90", periodo: "7 dias", renovacao: "R$ 47 a cada 4 semanas" }
   cronometroMin: 0,                        // minutos do cronômetro da oferta; 0 desliga. Use só com prazo real.
@@ -19,6 +22,10 @@ const CONFIG = {
   ],
 };
 /* ======================================== */
+const brl = n => "R$ " + n;
+// Plano escolhido na pergunta da âncora; sem resposta, usa o do meio
+const plano = () => CONFIG.planos.find(p => brl(p.preco) === A.ancora) || CONFIG.planos[1];
+const desconto = () => Math.round((1 - plano().preco / CONFIG.precoDe) * 100) + "% OFF";
 
 const I = {
   male:'<circle cx="10" cy="14" r="5"/><path d="M14 10l6-6M15 4h5v5"/>',
@@ -135,7 +142,7 @@ const STEPS = [
     p:"Com poucos minutos por dia e passo a passo, a IA vira uma ferramenta de trabalho em poucas semanas.", btn:"Quero avançar" },
   { id:"carregando", type:"load" },
   { id:"ancora", q:"Quanto você investiria em um <em>plano de IA feito para você</em>?",
-    o:[["","R$ 27"],["","R$ 47"],["","R$ 97"]] },
+    o:CONFIG.planos.map(p => ["", brl(p.preco)]) },
   { id:"raspadinha", type:"scratch" },
   { id:"resultado", type:"result" },
 ];
@@ -215,7 +222,7 @@ function renderPotential(){
 function renderScratch(){
   app.innerHTML = `<section class="step"><h2>Raspe e ganhe um <em>desconto no seu desafio</em></h2>
     <p class="sub">Passe o dedo ou o mouse sobre o cartão</p>
-    <div class="scratch"><div><div class="won">Você ganhou</div><div class="pct">${CONFIG.desconto}</div><div class="won" style="letter-spacing:0;text-transform:none;font-weight:500">no seu plano</div></div>
+    <div class="scratch"><div><div class="won">Você ganhou</div><div class="pct">${desconto()}</div><div class="won" style="letter-spacing:0;text-transform:none;font-weight:500">no seu plano</div></div>
       <canvas id="sc" style="position:absolute;inset:0;width:100%;height:100%;touch-action:none;cursor:grab"></canvas></div>
     <button class="cta buy" id="next" disabled>Usar meu desconto ${svg("arrow")}</button></section>`;
   const c = $("#sc"), x = c.getContext("2d"), r = c.getBoundingClientRect();
@@ -276,14 +283,14 @@ function renderResult(){
     <div class="card"><h3>O que você recebe</h3>
       <ul class="inc"><li>${svg("check")}28 aulas curtas, uma por dia</li><li>${svg("check")}Biblioteca de comandos prontos para copiar</li><li>${svg("check")}Exercícios práticos com cada ferramenta</li><li>${svg("check")}Acesso pelo celular ou computador</li><li>${svg("check")}Certificado de conclusão</li></ul></div>
     ${e ? `<div class="card"><h3>Quem vai te guiar</h3><div class="expert">${e.foto ? `<img src="${e.foto}" alt="${e.nome}">` : ""}<div><b>${e.nome}</b><p>${e.bio}</p></div></div></div>` : ""}
-    <div class="card price"><span class="tag">${svg("sparkles")} ${CONFIG.desconto} aplicado</span>
+    <div class="card price"><span class="tag">${svg("sparkles")} ${desconto()} aplicado</span>
       ${CONFIG.cronometroMin ? `<p class="note">Desconto válido por <b id="tm"></b></p>` : ""}
       ${CONFIG.teste
         ? `<p style="margin:14px 0 0">Teste por ${CONFIG.teste.periodo}</p><div class="big">${CONFIG.teste.preco}</div>
            <p class="note" style="margin:0">Depois, ${CONFIG.teste.renovacao}. Cancele quando quiser.</p>`
-        : `<p style="margin:14px 0 0">De <s>${CONFIG.precoDe}</s> por</p><div class="big">${CONFIG.precoPor}</div>
+        : `<p style="margin:14px 0 0">De <s>${brl(CONFIG.precoDe)}</s> por</p><div class="big">${brl(plano().preco)}</div>
            <p class="note" style="margin:0">${CONFIG.parcelas ? CONFIG.parcelas + " · " : ""}pagamento único</p>`}
-      <a class="cta buy" href="${CONFIG.checkout}" target="_blank" rel="noopener">Quero começar meu desafio ${svg("arrow")}</a>
+      <a class="cta buy" href="${plano().link}" target="_blank" rel="noopener">Quero começar meu desafio ${svg("arrow")}</a>
       <div class="trust"><span>${svg("lock")} Compra segura</span><span>${svg("shield")} Garantia de ${CONFIG.garantia}</span></div></div>
     <div class="card faq"><h3>Perguntas frequentes</h3>
       <details><summary>Preciso entender de tecnologia?</summary><p>Não. O desafio começa do zero e explica cada passo.</p></details>
